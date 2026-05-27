@@ -418,7 +418,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <div class="toast" id="toast"></div>
 
 <script>
-const API=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000/api':'/api';
+const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? 'http://localhost:8000/api'
+  : (location.hostname === '')
+    ? 'https://hcf-sistema-production.up.railway.app/api'
+    : '/api';
 const PSE_LABELS={1:'Muito, muito leve',2:'Muito leve',3:'Leve — confortável',4:'Moderado',5:'Um pouco difícil',6:'Difícil',7:'Muito difícil',8:'Muito, muito difícil',9:'Quase máximo',10:'Máximo — esforço total'};
 const TYPE_COLORS={'Força':'#60A5FA','Potência':'#A78BFA','Resistência Aeróbica':'#4ADE80','Resistência Anaeróbica':'#FB923C','Velocidade/Sprints':'#FCD34D','Agilidade/COD':'#FCD34D','Mobilidade':'#5EEAD4','Flexibilidade':'#5EEAD4','Técnico-Tático':'#A78BFA','Jogo/Competição':'#2DD4BF','Recuperação Ativa':'#9CA3AF','Folga':'#6B7280'};
 let token=localStorage.getItem('hcf_t'),athleteId=localStorage.getItem('hcf_aid'),athleteName=localStorage.getItem('hcf_n');

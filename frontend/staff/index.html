@@ -503,7 +503,11 @@ textarea.f-ctrl{resize:vertical;min-height:76px;line-height:1.6;}
 <div class="toast" id="toast"></div>
 
 <script>
-const API=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000/api':'/api';
+const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? 'http://localhost:8000/api'
+  : (location.hostname === '')
+    ? 'https://hcf-sistema-production.up.railway.app/api'
+    : '/api';
 let token=localStorage.getItem('hcf_st_t');
 let userName=localStorage.getItem('hcf_st_n');
 let athletes=[];

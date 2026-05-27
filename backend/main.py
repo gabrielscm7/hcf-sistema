@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 import os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -34,7 +34,7 @@ if os.path.exists(frontend_path):
 
 @app.get("/")
 def root():
-    return {"status": "ok", "app": "Handball Conditioning System v1.0"}
+    return RedirectResponse(url="/app/")
 
 @app.on_event("startup")
 def startup():
