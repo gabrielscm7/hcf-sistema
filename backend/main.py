@@ -49,6 +49,7 @@ def _seed_demo_data():
         if not staff:
             staff = User(username="gabriel", hashed_pw=hash_password("admin123"), role="staff")
             db.add(staff); db.flush()
+            db.commit()
 
         if db.query(Athlete).count() > 0:
             return  # already seeded
