@@ -44,12 +44,14 @@ def startup():
 def _seed_demo_data():
     db = SessionLocal()
     try:
-        if db.query(User).count() > 0:
-            return  # already seeded
+        # Garante que o usuário staff 'gabriel' sempre exista
+        staff = db.query(User).filter(User.username == "gabriel").first()
+        if not staff:
+            staff = User(username="gabriel", hashed_pw=hash_password("admin123"), role="staff")
+            db.add(staff); db.flush()
 
-        # Staff user
-        staff = User(username="gabriel", hashed_pw=hash_password("admin123"), role="staff")
-        db.add(staff); db.flush()
+        if db.query(Athlete).count() > 0:
+            return  # already seeded
 
         # Athletes
         athletes_data = [
