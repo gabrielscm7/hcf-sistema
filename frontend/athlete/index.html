@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1C1208">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>HCF · Portal do Atleta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --or:#E8470A;--or-d:#C23A06;--or-l:#FF6B35;--or-pale:#FDF0EB;--or-glow:rgba(232,71,10,.2);
+  --bg:#D4C9B8;--bg-d:#B8A898;--bg-l:#F0EDE8;--bg-pale:#FAF8F5;
+  --dk:#1C1208;--dk2:#251A0E;--dk3:#2F2114;--dk4:#3A2A1C;
+  --bdr:rgba(212,201,184,.1);--bdr2:rgba(212,201,184,.06);
+  --grn:#2D9E5F;--grn-l:rgba(45,158,95,.18);
+  --red:#DC2626;--red-l:rgba(220,38,38,.18);
+  --amb:#D97706;--amb-l:rgba(217,119,6,.18);
+  --fd:'Barlow Condensed',sans-serif;--fb:'DM Sans',sans-serif;
+  --r:14px;--rs:8px;--rl:20px;
+}
+body{font-family:var(--fb);background:var(--dk);color:var(--bg-l);min-height:100dvh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(212,201,184,.15);border-radius:2px}
+
+/* LOGIN */
+#login-screen{
+  min-height:100dvh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:32px 24px;
+  background:linear-gradient(170deg,var(--dk) 0%,var(--dk2) 55%,var(--dk3) 100%);
+  position:relative;overflow:hidden;
+}
+#login-screen::before{content:'';position:absolute;width:280px;height:280px;border-radius:50%;background:var(--or-glow);top:-80px;right:-80px;filter:blur(60px);pointer-events:none;}
+#login-screen::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(212,201,184,.05);bottom:-60px;left:-60px;filter:blur(40px);pointer-events:none;}
+.login-logo{width:180px;margin-bottom:28px;filter:drop-shadow(0 4px 24px rgba(232,71,10,.4));animation:logoIn .6s cubic-bezier(.22,1,.36,1) both;}
+@keyframes logoIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.login-eyebrow{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:4px;color:var(--or);text-transform:uppercase;text-align:center;margin-bottom:8px;animation:fu .5s .2s both;}
+.login-title{font-family:var(--fd);font-size:38px;font-weight:800;text-align:center;color:var(--bg-l);line-height:1.05;margin-bottom:28px;letter-spacing:.5px;animation:fu .5s .3s both;}
+.login-title span{color:var(--or);}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.login-card{width:100%;max-width:360px;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:var(--rl);padding:28px 24px;backdrop-filter:blur(20px);animation:fu .5s .4s both;position:relative;z-index:1;}
+.lf-label{font-size:11px;font-weight:600;letter-spacing:1.2px;color:var(--bg-d);text-transform:uppercase;margin-bottom:8px;}
+.lf-input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--bg-l);font-family:var(--fb);font-size:16px;padding:14px 16px;margin-bottom:18px;outline:none;transition:all .2s;-webkit-appearance:none;}
+.lf-input:focus{border-color:var(--or);background:rgba(232,71,10,.06);}
+.lf-input::placeholder{color:rgba(212,201,184,.3);}
+.btn-login{width:100%;background:var(--or);color:#fff;border:none;border-radius:var(--rs);font-family:var(--fd);font-size:18px;font-weight:700;padding:15px;cursor:pointer;letter-spacing:.8px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 20px var(--or-glow);}
+.btn-login:hover{background:var(--or-l);}
+.btn-login:disabled{background:var(--dk4);color:var(--bg-d);box-shadow:none;cursor:default;}
+.login-error{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.25);color:#FCA5A5;border-radius:var(--rs);padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;text-align:center;}
+.login-footer{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:10px;color:rgba(212,201,184,.22);padding:0 24px;line-height:1.8;animation:fu .5s .7s both;}
+
+/* APP SHELL */
+#app{display:none;flex-direction:column;min-height:100dvh;}
+.app-header{background:var(--dk2);border-bottom:1px solid var(--bdr2);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-logo{height:30px;width:auto;}
+.hdr-sep{width:1px;height:22px;background:var(--bdr);margin:0 2px;}
+.hdr-info{display:flex;flex-direction:column;gap:1px;}
+.hdr-name{font-family:var(--fd);font-size:16px;font-weight:700;letter-spacing:.3px;color:var(--bg-l);}
+.hdr-pos{font-size:11px;color:var(--or);font-weight:600;letter-spacing:.5px;}
+.btn-out{background:transparent;border:1px solid var(--bdr);border-radius:var(--rs);color:rgba(212,201,184,.4);font-family:var(--fb);font-size:12px;padding:7px 13px;cursor:pointer;transition:all .2s;}
+.btn-out:hover{border-color:var(--or);color:var(--or);}
+.app-content{flex:1;padding:18px 16px 110px;overflow-y:auto;}
+
+/* TAB BAR */
+.tab-bar{position:fixed;bottom:0;left:0;right:0;background:var(--dk2);border-top:1px solid var(--bdr2);display:flex;padding:8px 4px 20px;gap:2px;z-index:100;}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border:none;background:transparent;color:rgba(212,201,184,.3);border-radius:10px;cursor:pointer;transition:all .2s;font-family:var(--fb);}
+.tab-btn.active{background:var(--or-glow);color:var(--or);}
+.tab-icon{font-size:20px;}
+.tab-label{font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;}
+
+/* SECTIONS */
+.section{display:none;animation:fu .22s ease;}
+.section.active{display:block;}
+
+/* CARDS */
+.card{background:rgba(255,255,255,.04);border:1px solid var(--bdr2);border-radius:var(--r);padding:18px;margin-bottom:12px;}
+.card-title{font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:1.5px;color:rgba(212,201,184,.4);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card-title em{font-size:15px;font-style:normal;}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.kpi{background:rgba(255,255,255,.04);border:1px solid var(--bdr2);border-radius:var(--r);padding:14px 10px;text-align:center;}
+.kpi-val{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--bg-l);line-height:1;}
+.kpi-lbl{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(212,201,184,.35);margin-top:5px;}
+
+/* ACWR */
+.acwr-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:24px;font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:.5px;margin:4px 0;}
+.acwr-safe{background:var(--grn-l);color:#4ADE80;border:1px solid rgba(45,158,95,.3);}
+.acwr-warning{background:var(--amb-l);color:#FCD34D;border:1px solid rgba(217,119,6,.3);}
+.acwr-danger{background:var(--red-l);color:#FCA5A5;border:1px solid rgba(220,38,38,.3);}
+.acwr-neutral{background:rgba(212,201,184,.07);color:var(--bg-d);border:1px solid var(--bdr);}
+
+/* PSE */
+.pse-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:14px 0;}
+.pse-btn{aspect-ratio:1;border:none;border-radius:10px;font-family:var(--fd);font-size:20px;font-weight:800;cursor:pointer;transition:all .18s;opacity:.35;display:flex;align-items:center;justify-content:center;}
+.pse-btn.sel{opacity:1;transform:scale(1.12);box-shadow:0 4px 16px rgba(0,0,0,.35);}
+.p1,.p2{background:#86EFAC;color:#14532D;}
+.p3,.p4{background:#FEF08A;color:#713F12;}
+.p5,.p6{background:#FED7AA;color:#7C2D12;}
+.p7,.p8{background:#FCA5A5;color:#7F1D1D;}
+.p9,.p10{background:#F87171;color:#450A0A;}
+.pse-desc{text-align:center;font-size:13px;color:rgba(212,201,184,.45);min-height:20px;margin-top:4px;}
+
+/* SCALE */
+.scale-row{display:flex;gap:6px;margin:10px 0;}
+.scale-btn{flex:1;padding:12px 4px;border:1.5px solid var(--bdr);border-radius:var(--rs);background:rgba(255,255,255,.04);color:rgba(212,201,184,.45);font-family:var(--fd);font-size:18px;font-weight:800;cursor:pointer;text-align:center;transition:all .15s;}
+.scale-btn.sel{border-color:var(--or);background:var(--or-glow);color:var(--or);}
+
+/* ORIGIN */
+.origin-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0;}
+.origin-btn{padding:12px 6px;border:1.5px solid var(--bdr);border-radius:var(--rs);background:rgba(255,255,255,.03);color:rgba(212,201,184,.45);font-family:var(--fb);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;line-height:1.4;}
+.o-fis{border-color:#60A5FA;background:rgba(96,165,250,.12);color:#60A5FA;}
+.o-tt{border-color:#A78BFA;background:rgba(167,139,250,.12);color:#A78BFA;}
+.o-jg{border-color:#5EEAD4;background:rgba(94,234,212,.12);color:#5EEAD4;}
+
+/* TYPE PILLS */
+.type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0;}
+.type-btn{padding:12px 8px;border:1.5px solid var(--bdr);border-radius:var(--rs);background:rgba(255,255,255,.03);color:rgba(212,201,184,.5);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s;}
+.type-btn.sel{border-color:var(--or);background:var(--or-glow);color:var(--or);font-weight:700;}
+
+/* RANGE */
+.range-wrap{margin-bottom:18px;}
+.range-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.range-lbl{font-size:14px;font-weight:500;color:var(--bg-l);}
+.range-val{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--or);}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;background:rgba(212,201,184,.12);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--or);cursor:pointer;box-shadow:0 2px 8px var(--or-glow);}
+.range-ends{display:flex;justify-content:space-between;font-size:10px;color:rgba(212,201,184,.3);margin-top:4px;}
+
+/* FORM */
+.f-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(212,201,184,.4);margin-bottom:7px;}
+.f-input,.f-select,.f-textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--bg-l);font-family:var(--fb);font-size:15px;padding:12px 14px;outline:none;transition:all .2s;-webkit-appearance:none;}
+.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:var(--or);background:rgba(232,71,10,.05);}
+.f-input::placeholder,.f-textarea::placeholder{color:rgba(212,201,184,.25);}
+.f-select option{background:var(--dk2);}
+.f-textarea{resize:none;line-height:1.6;}
+.f-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.f-row{margin-bottom:16px;}
+
+/* LOAD PREVIEW */
+.load-preview{display:flex;justify-content:space-between;align-items:center;background:rgba(232,71,10,.08);border:1px solid rgba(232,71,10,.2);border-radius:var(--rs);padding:12px 16px;margin-top:8px;}
+.lp-lbl{font-size:12px;color:rgba(212,201,184,.45);}
+.lp-val{font-family:var(--fd);font-size:22px;font-weight:800;color:var(--or);}
+
+/* HISTORY */
+.hist-item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--bdr2);}
+.hist-item:last-child{border-bottom:none;}
+.hist-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.hist-body{flex:1;}
+.hist-type{font-size:14px;font-weight:600;color:var(--bg-l);}
+.hist-meta{font-size:11px;color:rgba(212,201,184,.32);margin-top:2px;}
+.hist-ua{font-family:var(--fd);font-size:15px;font-weight:700;text-align:right;}
+
+/* SECTION HEADER */
+.sec-title{font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:.5px;color:var(--bg-l);margin-bottom:2px;}
+.sec-sub{font-size:13px;color:rgba(212,201,184,.38);margin-bottom:18px;}
+
+/* BUTTONS */
+.btn-primary{width:100%;background:var(--or);color:#fff;border:none;border-radius:var(--rs);font-family:var(--fd);font-size:18px;font-weight:700;padding:16px;cursor:pointer;letter-spacing:.8px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 20px var(--or-glow);margin-top:8px;}
+.btn-primary:hover{background:var(--or-l);}
+.btn-primary:active{transform:scale(.98);}
+.btn-primary:disabled{background:var(--dk4);color:var(--bg-d);box-shadow:none;cursor:default;}
+.btn-ghost{width:100%;background:transparent;border:1.5px solid var(--bdr);color:var(--bg-d);border-radius:var(--rs);font-family:var(--fd);font-size:16px;font-weight:600;padding:13px;cursor:pointer;margin-top:8px;transition:all .2s;letter-spacing:.3px;text-transform:uppercase;}
+.btn-ghost:hover{border-color:var(--or);color:var(--or);}
+
+/* WELLNESS SCORE */
+.score-ring{width:100px;height:100px;border-radius:50%;border:4px solid var(--or);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:8px auto;box-shadow:0 0 24px var(--or-glow);}
+.score-num{font-family:var(--fd);font-size:32px;font-weight:800;color:var(--or);}
+.score-max{font-size:11px;color:rgba(212,201,184,.4);}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--or);color:#fff;padding:12px 24px;border-radius:24px;font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:.3px;opacity:0;pointer-events:none;transition:all .3s;z-index:200;white-space:nowrap;box-shadow:0 4px 20px var(--or-glow);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:var(--red);}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:rgba(212,201,184,.22);font-size:13px;}
+.empty-icon{font-size:38px;display:block;margin-bottom:10px;}
+
+/* FOOTER */
+.app-footer{background:var(--dk);border-top:1px solid var(--bdr2);padding:20px 16px 104px;text-align:center;}
+.footer-logo{height:36px;margin-bottom:10px;opacity:.55;}
+.footer-name{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:1.2px;color:var(--or);text-transform:uppercase;margin-bottom:4px;}
+.footer-info{font-size:10px;color:rgba(212,201,184,.28);line-height:1.8;letter-spacing:.3px;}
+.footer-contact{font-size:11px;color:var(--or);margin-top:8px;opacity:.65;}
+.divider{height:1px;background:var(--bdr2);margin:16px 0;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <img src="../logo.png" class="login-logo" alt="Gabriel Menezes" onerror="this.style.display='none'">
+  <div class="login-eyebrow">Sistema HCF</div>
+  <div class="login-title">Portal do<br><span>Atleta</span></div>
+  <div class="login-card">
+    <div id="login-error" class="login-error">Usuário ou senha incorretos</div>
+    <div class="lf-label">Usuário</div>
+    <input class="lf-input" type="text" id="inp-user" placeholder="seu.login" autocomplete="username" autocapitalize="none">
+    <div class="lf-label">Senha</div>
+    <input class="lf-input" type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn-login" id="btn-login" onclick="doLogin()">Entrar</button>
+  </div>
+  <div class="login-footer">
+    Gabriel Menezes Consultoria em Treinamento e Saúde<br>
+    CREF 195980-G/SP &nbsp;·&nbsp; CNPJ 64.768.190/0001-74<br>
+    personal.gabrielmenezes@gmail.com
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="app-header">
+    <div class="hdr-brand">
+      <img src="../logo.png" class="hdr-logo" alt="GM" onerror="this.style.display='none'">
+      <div class="hdr-sep"></div>
+      <div class="hdr-info">
+        <div class="hdr-name" id="hdr-name">—</div>
+        <div class="hdr-pos" id="hdr-pos">—</div>
+      </div>
+    </div>
+    <button class="btn-out" onclick="doLogout()">Sair</button>
+  </header>
+
+  <main class="app-content">
+
+    <!-- HOME -->
+    <section id="sec-home" class="section active">
+      <div class="sec-title">Olá, <span id="home-fn" style="color:var(--or)">—</span></div>
+      <div class="sec-sub" id="home-date"></div>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val" id="kpi-acwr" style="color:var(--or)">—</div><div class="kpi-lbl">ACWR</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-wellness">—</div><div class="kpi-lbl">Wellness</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-sessions">—</div><div class="kpi-lbl">Sessões/7d</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>📊</em> Status de Carga</div>
+        <div id="acwr-badge-wrap"><div class="acwr-neutral acwr-badge">Carregando...</div></div>
+        <div style="margin-top:10px;font-size:12px;color:rgba(212,201,184,.32)" id="acwr-detail"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>⚡</em> Ações rápidas</div>
+        <button class="btn-ghost" onclick="goTab('load')" style="margin-top:0">+ Registrar PSE do dia</button>
+        <button class="btn-ghost" onclick="goTab('wellness')" style="border-color:var(--grn);color:var(--grn)">+ Preencher Wellness</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>🕑</em> Últimas sessões</div>
+        <div id="recent-loads"><div class="empty"><span class="empty-icon">🏋️</span>Nenhuma sessão ainda</div></div>
+      </div>
+    </section>
+
+    <!-- CARGA -->
+    <section id="sec-load" class="section">
+      <div class="sec-title">Registrar Sessão</div>
+      <div class="sec-sub">PSE × Volume — todas as sessões contam</div>
+      <div class="card">
+        <div class="card-title"><em>📅</em> Data</div>
+        <input class="f-input" type="date" id="load-date">
+      </div>
+      <div class="card">
+        <div class="card-title"><em>🏷️</em> Tipo de sessão</div>
+        <div class="type-grid">
+          <button class="type-btn" data-val="Força">💪 Força</button>
+          <button class="type-btn" data-val="Potência">⚡ Potência</button>
+          <button class="type-btn" data-val="Resistência Aeróbica">🫁 Aeróbica</button>
+          <button class="type-btn" data-val="Resistência Anaeróbica">🔥 Anaeróbica</button>
+          <button class="type-btn" data-val="Velocidade/Sprints">🏃 Velocidade</button>
+          <button class="type-btn" data-val="Agilidade/COD">🔀 Agilidade</button>
+          <button class="type-btn" data-val="Mobilidade">🧘 Mobilidade</button>
+          <button class="type-btn" data-val="Flexibilidade">🤸 Flexibilidade</button>
+          <button class="type-btn" data-val="Técnico-Tático">🤝 Técnico-Tát.</button>
+          <button class="type-btn" data-val="Jogo/Competição">🏆 Jogo</button>
+          <button class="type-btn" data-val="Recuperação Ativa">💆 Recuperação</button>
+          <button class="type-btn" data-val="Folga">😴 Folga</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>🏢</em> Origem</div>
+        <div class="origin-row">
+          <button class="origin-btn" data-origin="Prep. Física">Prep.<br>Física</button>
+          <button class="origin-btn" data-origin="Comissão Técnica">Comissão<br>Técnica</button>
+          <button class="origin-btn" data-origin="Jogo">Jogo /<br>Competição</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>⏱️</em> Duração</div>
+        <div class="f-grid2">
+          <div><div class="f-label">Minutos</div><input class="f-input" type="number" id="load-volume" placeholder="60" min="1" max="300"></div>
+          <div style="display:flex;align-items:flex-end">
+            <div class="load-preview" style="width:100%">
+              <div class="lp-lbl">Carga est.</div>
+              <div class="lp-val" id="load-preview">— UA</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>💢</em> PSE — Percepção de Esforço</div>
+        <div class="pse-grid">
+          <button class="pse-btn p1" data-pse="1">1</button>
+          <button class="pse-btn p2" data-pse="2">2</button>
+          <button class="pse-btn p3" data-pse="3">3</button>
+          <button class="pse-btn p4" data-pse="4">4</button>
+          <button class="pse-btn p5" data-pse="5">5</button>
+          <button class="pse-btn p6" data-pse="6">6</button>
+          <button class="pse-btn p7" data-pse="7">7</button>
+          <button class="pse-btn p8" data-pse="8">8</button>
+          <button class="pse-btn p9" data-pse="9">9</button>
+          <button class="pse-btn p10" data-pse="10">10</button>
+        </div>
+        <div class="pse-desc" id="pse-desc">Selecione sua percepção</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>😴</em> Percepção de Repouso</div>
+        <div class="scale-row" id="rest-btns">
+          <button class="scale-btn" data-rest="1">1</button>
+          <button class="scale-btn" data-rest="2">2</button>
+          <button class="scale-btn" data-rest="3">3</button>
+          <button class="scale-btn" data-rest="4">4</button>
+          <button class="scale-btn" data-rest="5">5</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(212,201,184,.3);padding:0 2px"><span>Péssimo</span><span>Excelente</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>📝</em> Observações</div>
+        <textarea class="f-input f-textarea" id="load-notes" rows="3" placeholder="Algo relevante sobre a sessão..."></textarea>
+      </div>
+      <button class="btn-primary" id="btn-save-load" onclick="saveLoad()">Salvar Sessão</button>
+    </section>
+
+    <!-- WELLNESS -->
+    <section id="sec-wellness" class="section">
+      <div class="sec-title">Wellness</div>
+      <div class="sec-sub">Preencha antes do treino — honestidade importa</div>
+      <div class="card">
+        <div class="card-title"><em>📅</em> Data</div>
+        <input class="f-input" type="date" id="well-date">
+      </div>
+      <div class="card">
+        <div class="card-title"><em>😴</em> Sono</div>
+        <div class="f-grid2" style="gap:12px">
+          <div><div class="f-label">Horas dormidas</div><input class="f-input" type="number" id="well-sleep-h" placeholder="7.5" min="0" max="14" step="0.5"></div>
+          <div><div class="f-label">Qualidade</div>
+            <div class="scale-row" id="sq-btns" style="margin:7px 0 0">
+              <button class="scale-btn" data-sq="1">1</button>
+              <button class="scale-btn" data-sq="2">2</button>
+              <button class="scale-btn" data-sq="3">3</button>
+              <button class="scale-btn" data-sq="4">4</button>
+              <button class="scale-btn" data-sq="5">5</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>💪</em> Estado físico</div>
+        <div class="range-wrap"><div class="range-hdr"><div class="range-lbl">Fadiga Muscular</div><div class="range-val" id="v-fat">5</div></div><input type="range" min="1" max="10" value="5" id="r-fat" oninput="document.getElementById('v-fat').textContent=this.value;updateWellScore()"><div class="range-ends"><span>Sem fadiga</span><span>Exausto</span></div></div>
+        <div class="range-wrap"><div class="range-hdr"><div class="range-lbl">Dor Muscular (DOMS)</div><div class="range-val" id="v-sor">5</div></div><input type="range" min="1" max="10" value="5" id="r-sor" oninput="document.getElementById('v-sor').textContent=this.value;updateWellScore()"><div class="range-ends"><span>Sem dor</span><span>Dor intensa</span></div></div>
+        <div class="range-wrap"><div class="range-hdr"><div class="range-lbl">Nível de Dor</div><div class="range-val" id="v-pain">5</div></div><input type="range" min="1" max="10" value="5" id="r-pain" oninput="document.getElementById('v-pain').textContent=this.value;updateWellScore()"><div class="range-ends"><span>Sem dor</span><span>Dor máxima</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>🧠</em> Estado mental</div>
+        <div class="range-wrap"><div class="range-hdr"><div class="range-lbl">Estresse Psicológico</div><div class="range-val" id="v-str">5</div></div><input type="range" min="1" max="10" value="5" id="r-str" oninput="document.getElementById('v-str').textContent=this.value;updateWellScore()"><div class="range-ends"><span>Sem estresse</span><span>Muito estressado</span></div></div>
+        <div class="range-wrap"><div class="range-hdr"><div class="range-lbl">Humor</div><div class="range-val" id="v-mood">3</div></div><input type="range" min="1" max="5" value="3" id="r-mood" oninput="document.getElementById('v-mood').textContent=this.value"><div class="range-ends"><span>Péssimo</span><span>Ótimo</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>💧</em> Hidratação</div>
+        <div class="scale-row" id="hyd-btns">
+          <button class="scale-btn" data-hyd="1">1</button>
+          <button class="scale-btn" data-hyd="2">2</button>
+          <button class="scale-btn" data-hyd="3">3</button>
+          <button class="scale-btn" data-hyd="4">4</button>
+          <button class="scale-btn" data-hyd="5">5</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(212,201,184,.3);padding:0 2px"><span>Desidratado</span><span>Bem hidratado</span></div>
+      </div>
+      <div class="card" id="well-score-card" style="display:none">
+        <div class="card-title"><em>⭐</em> Score de Wellness</div>
+        <div style="text-align:center;padding:8px 0">
+          <div class="score-ring"><div class="score-num" id="well-score-num">—</div><div class="score-max">/ 10</div></div>
+          <div id="well-avail" style="margin-top:12px;font-family:var(--fd);font-size:16px;font-weight:700"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><em>📝</em> Observações</div>
+        <textarea class="f-input f-textarea" id="well-notes" rows="2" placeholder="Algo relevante..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="saveWellness()">Salvar Wellness</button>
+    </section>
+
+    <!-- HISTÓRICO -->
+    <section id="sec-history" class="section">
+      <div class="sec-title">Histórico</div>
+      <div class="sec-sub">Suas últimas 30 sessões</div>
+      <div class="card">
+        <div id="history-list"><div class="empty"><span class="empty-icon">📋</span>Carregando...</div></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <img src="../logo.png" class="footer-logo" alt="GM" onerror="this.style.display='none'">
+    <div class="footer-name">Gabriel Menezes</div>
+    <div class="footer-info">Consultoria em Treinamento e Saúde<br>CREF 195980-G/SP &nbsp;·&nbsp; CNPJ 64.768.190/0001-74</div>
+    <div class="footer-contact">personal.gabrielmenezes@gmail.com</div>
+  </footer>
+
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="home" onclick="goTab('home')"><span class="tab-icon">🏠</span><span class="tab-label">Início</span></button>
+    <button class="tab-btn" data-tab="load" onclick="goTab('load')"><span class="tab-icon">💢</span><span class="tab-label">PSE</span></button>
+    <button class="tab-btn" data-tab="wellness" onclick="goTab('wellness')"><span class="tab-icon">💚</span><span class="tab-label">Wellness</span></button>
+    <button class="tab-btn" data-tab="history" onclick="goTab('history')"><span class="tab-icon">📋</span><span class="tab-label">Histórico</span></button>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000/api':'/api';
+const PSE_LABELS={1:'Muito, muito leve',2:'Muito leve',3:'Leve — confortável',4:'Moderado',5:'Um pouco difícil',6:'Difícil',7:'Muito difícil',8:'Muito, muito difícil',9:'Quase máximo',10:'Máximo — esforço total'};
+const TYPE_COLORS={'Força':'#60A5FA','Potência':'#A78BFA','Resistência Aeróbica':'#4ADE80','Resistência Anaeróbica':'#FB923C','Velocidade/Sprints':'#FCD34D','Agilidade/COD':'#FCD34D','Mobilidade':'#5EEAD4','Flexibilidade':'#5EEAD4','Técnico-Tático':'#A78BFA','Jogo/Competição':'#2DD4BF','Recuperação Ativa':'#9CA3AF','Folga':'#6B7280'};
+let token=localStorage.getItem('hcf_t'),athleteId=localStorage.getItem('hcf_aid'),athleteName=localStorage.getItem('hcf_n');
+let selPse=null,selRest=null,selSq=null,selHyd=null,selType=null,selOrigin=null;
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('load-date').value=today;
+  document.getElementById('well-date').value=today;
+  document.getElementById('home-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  initBtns();
+  document.getElementById('inp-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  document.getElementById('load-volume').addEventListener('input',updatePreview);
+  if(token&&athleteId) showApp(); else showLogin();
+});
+
+function showLogin(){document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';}
+function showApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('hdr-name').textContent=athleteName||'—';
+  document.getElementById('home-fn').textContent=(athleteName||'—').split(' ')[0];
+  document.getElementById('hdr-pos').textContent=localStorage.getItem('hcf_pos')||'Atleta';
+  loadHome();
+}
+
+async function doLogin(){
+  const u=document.getElementById('inp-user').value.trim();
+  const p=document.getElementById('inp-pass').value;
+  const btn=document.getElementById('btn-login');
+  const err=document.getElementById('login-error');
+  if(!u||!p) return;
+  btn.disabled=true; btn.textContent='Entrando...'; err.style.display='none';
+  try{
+    const fd=new FormData(); fd.append('username',u); fd.append('password',p);
+    const r=await fetch(`${API}/auth/token`,{method:'POST',body:fd});
+    const d=await r.json();
+    if(!r.ok) throw new Error();
+    token=d.access_token; athleteId=d.athlete_id; athleteName=d.name;
+    localStorage.setItem('hcf_t',token); localStorage.setItem('hcf_aid',athleteId); localStorage.setItem('hcf_n',athleteName);
+    if(athleteId){try{const a=await apiFetch(`/athletes/${athleteId}`);localStorage.setItem('hcf_pos',a.position||'');}catch(_){}}
+    showApp();
+  }catch(e){err.style.display='block'; btn.disabled=false; btn.textContent='Entrar';}
+}
+
+function doLogout(){localStorage.clear();token=athleteId=athleteName=null;document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';}
+
+function goTab(tab){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`sec-${tab}`).classList.add('active');
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+  if(tab==='history') loadHistory();
+  if(tab==='home') loadHome();
+}
+
+async function loadHome(){
+  if(!athleteId) return;
+  try{
+    const [acwr,loads,well]=await Promise.all([apiFetch(`/athletes/${athleteId}/analytics/acwr`),apiFetch(`/athletes/${athleteId}/loads?limit=7`),apiFetch(`/athletes/${athleteId}/wellness?limit=1`)]);
+    if(acwr){
+      document.getElementById('kpi-acwr').textContent=acwr.acwr??'—';
+      const cls={safe:'acwr-safe',warning:'acwr-warning',danger:'acwr-danger',neutral:'acwr-neutral'}[acwr.risk]||'acwr-neutral';
+      document.getElementById('acwr-badge-wrap').innerHTML=`<div class="acwr-badge ${cls}">${acwr.zone} · ACWR ${acwr.acwr??'—'}</div>`;
+      document.getElementById('acwr-detail').textContent=`Carga 7d: ${acwr.acute_load} UA  ·  Crônica: ${acwr.chronic_weekly} UA/sem`;
+    }
+    if(loads){document.getElementById('kpi-sessions').textContent=loads.length;renderRecent(loads.slice(0,4));}
+    if(well&&well.length) document.getElementById('kpi-wellness').textContent=well[0].wellness_score??'—';
+  }catch(e){console.warn(e);}
+}
+
+function renderRecent(loads){
+  if(!loads.length) return;
+  document.getElementById('recent-loads').innerHTML=loads.map(l=>{
+    const c=TYPE_COLORS[l.session_type]||'#9CA3AF';
+    return `<div class="hist-item"><div class="hist-dot" style="background:${c}"></div><div class="hist-body"><div class="hist-type">${l.session_type}</div><div class="hist-meta">${fmtDate(l.date)} · ${l.volume_min}min · PSE ${l.pse}</div></div><div class="hist-ua" style="color:${c}">${l.load_ua}<br><span style="font-size:9px;opacity:.5">UA</span></div></div>`;
+  }).join('');
+}
+
+function initBtns(){
+  document.querySelectorAll('.pse-btn').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.pse-btn').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel'); selPse=+b.dataset.pse;
+    document.getElementById('pse-desc').textContent=PSE_LABELS[selPse]||'';
+    updatePreview();
+  }));
+  document.querySelectorAll('.scale-btn[data-rest]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.scale-btn[data-rest]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');selRest=+b.dataset.rest;}));
+  document.querySelectorAll('.scale-btn[data-sq]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.scale-btn[data-sq]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');selSq=+b.dataset.sq;}));
+  document.querySelectorAll('.scale-btn[data-hyd]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.scale-btn[data-hyd]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');selHyd=+b.dataset.hyd;}));
+  document.querySelectorAll('.type-btn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.type-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');selType=b.dataset.val;}));
+  const omap={'Prep. Física':'o-fis','Comissão Técnica':'o-tt','Jogo':'o-jg'};
+  document.querySelectorAll('.origin-btn').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.origin-btn').forEach(x=>x.classList.remove('o-fis','o-tt','o-jg'));
+    const cls=omap[b.dataset.origin]; if(cls) b.classList.add(cls); selOrigin=b.dataset.origin;
+  }));
+}
+
+function updatePreview(){const v=+document.getElementById('load-volume').value||0;const p=selPse||0;document.getElementById('load-preview').textContent=v&&p?`${v*p} UA`:'— UA';}
+
+function updateWellScore(){
+  const f=+document.getElementById('r-fat').value,s=+document.getElementById('r-sor').value,p=+document.getElementById('r-pain').value,st=+document.getElementById('r-str').value;
+  const score=Math.round((10-((f+s+p+st)/4))*10)/10;
+  document.getElementById('well-score-num').textContent=score.toFixed(1);
+  document.getElementById('well-score-card').style.display='block';
+  const avail=score>=7?'✅ Disponível para treinar':score>=5?'⚠️ Monitorar':'❌ Afastamento recomendado';
+  const c=score>=7?'var(--grn)':score>=5?'var(--amb)':'var(--red)';
+  document.getElementById('well-avail').innerHTML=`<span style="color:${c}">${avail}</span>`;
+}
+
+async function saveLoad(){
+  const date=document.getElementById('load-date').value,volume=+document.getElementById('load-volume').value;
+  if(!date||!volume||!selPse||!selType||!selOrigin){showToast('Preencha: data, tipo, origem, duração e PSE',true);return;}
+  const btn=document.getElementById('btn-save-load');btn.disabled=true;btn.textContent='Salvando...';
+  try{
+    await apiFetch(`/athletes/${athleteId}/loads`,{method:'POST',body:JSON.stringify({date,session_type:selType,session_origin:selOrigin,volume_min:volume,pse:selPse,rest_perception:selRest,notes:document.getElementById('load-notes').value||null})});
+    showToast('Sessão salva! 💪'); resetLoad(); loadHome();
+  }catch(e){showToast('Erro ao salvar',true);}
+  finally{btn.disabled=false;btn.textContent='Salvar Sessão';}
+}
+
+function resetLoad(){selPse=selRest=selType=selOrigin=null;document.getElementById('load-volume').value='';document.getElementById('load-notes').value='';document.getElementById('load-preview').textContent='— UA';document.getElementById('pse-desc').textContent='Selecione sua percepção';document.querySelectorAll('.pse-btn,.type-btn').forEach(b=>b.classList.remove('sel'));document.querySelectorAll('.origin-btn').forEach(b=>b.classList.remove('o-fis','o-tt','o-jg'));document.querySelectorAll('.scale-btn[data-rest]').forEach(b=>b.classList.remove('sel'));}
+
+async function saveWellness(){
+  const date=document.getElementById('well-date').value;
+  if(!date){showToast('Selecione a data',true);return;}
+  try{
+    await apiFetch(`/athletes/${athleteId}/wellness`,{method:'POST',body:JSON.stringify({date,sleep_hours:parseFloat(document.getElementById('well-sleep-h').value)||null,sleep_quality:selSq,muscle_fatigue:+document.getElementById('r-fat').value,muscle_soreness:+document.getElementById('r-sor').value,pain_level:+document.getElementById('r-pain').value,hydration:selHyd,psych_stress:+document.getElementById('r-str').value,mood:+document.getElementById('r-mood').value,notes:document.getElementById('well-notes').value||null})});
+    showToast('Wellness salvo! 💚');
+  }catch(e){showToast('Erro ao salvar',true);}
+}
+
+async function loadHistory(){
+  const list=document.getElementById('history-list');
+  list.innerHTML='<div class="empty"><span class="empty-icon">⏳</span>Carregando...</div>';
+  try{
+    const loads=await apiFetch(`/athletes/${athleteId}/loads?limit=30`);
+    if(!loads.length){list.innerHTML='<div class="empty"><span class="empty-icon">📋</span>Nenhuma sessão ainda</div>';return;}
+    list.innerHTML=loads.map(l=>{const c=TYPE_COLORS[l.session_type]||'#9CA3AF';return `<div class="hist-item"><div class="hist-dot" style="background:${c}"></div><div class="hist-body"><div class="hist-type">${l.session_type}</div><div class="hist-meta">${fmtDate(l.date)} · ${l.volume_min}min · PSE ${l.pse} · ${l.session_origin}</div></div><div class="hist-ua" style="color:${c}">${l.load_ua}<br><span style="font-size:9px;opacity:.5">UA</span></div></div>`;}).join('');
+  }catch(e){list.innerHTML='<div class="empty"><span class="empty-icon">⚠️</span>Erro ao carregar</div>';}
+}
+
+async function apiFetch(endpoint,opts={}){
+  const r=await fetch(API+endpoint,{headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json',...(opts.headers||{})}, ...opts});
+  if(r.status===401){doLogout();return;}
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+function fmtDate(d){return new Date(d+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});}
+function showToast(msg,isErr=false){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(isErr?' err':'');setTimeout(()=>t.className='toast',2800);}
+</script>
+</body>
+</html>

@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCF · Painel Técnico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --or:#E8470A;--or-d:#C23A06;--or-l:#FF6B35;--or-glow:rgba(232,71,10,.18);
+  --bg:#D4C9B8;--bg-d:#B8A898;--bg-l:#F0EDE8;
+  --dk:#1C1208;--dk2:#221508;--dk3:#2A1C0C;--dk4:#342410;--dk5:#3E2C18;
+  --bdr:rgba(212,201,184,.1);--bdr2:rgba(212,201,184,.06);--bdr3:rgba(212,201,184,.04);
+  --grn:#2D9E5F;--grn-l:rgba(45,158,95,.16);
+  --red:#DC2626;--red-l:rgba(220,38,38,.15);
+  --amb:#D97706;--amb-l:rgba(217,119,6,.15);
+  --blu:#2563EB;--blu-l:rgba(37,99,235,.15);
+  --pur:#7C3AED;--pur-l:rgba(124,58,237,.15);
+  --tea:#0D9488;--tea-l:rgba(13,148,136,.15);
+  --fd:'Barlow Condensed',sans-serif;--fb:'DM Sans',sans-serif;
+  --sidebar:240px;--r:12px;--rs:8px;--rl:18px;
+}
+body{font-family:var(--fb);background:var(--dk);color:var(--bg-l);display:flex;min-height:100vh;overflow:hidden;}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:rgba(212,201,184,.15);border-radius:2px}
+
+/* ══ LOGIN ══════════════════════════════════════════════════════ */
+#login-screen{
+  width:100%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--dk) 0%,var(--dk2) 60%,var(--dk) 100%);
+  position:relative;overflow:hidden;
+}
+#login-screen::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:var(--or-glow);top:-180px;right:-180px;filter:blur(80px);pointer-events:none;}
+#login-screen::after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(212,201,184,.04);bottom:-100px;left:-100px;filter:blur(60px);pointer-events:none;}
+.login-box{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:var(--rl);padding:44px 40px;width:420px;backdrop-filter:blur(20px);position:relative;z-index:1;}
+.login-logo{height:52px;margin-bottom:28px;}
+.login-badge{display:inline-block;padding:4px 14px;background:rgba(232,71,10,.15);border:1px solid rgba(232,71,10,.3);border-radius:20px;font-size:10px;font-weight:700;letter-spacing:2.5px;color:var(--or);text-transform:uppercase;margin-bottom:18px;}
+.login-h1{font-family:var(--fd);font-size:30px;font-weight:800;margin-bottom:6px;line-height:1.15;letter-spacing:.5px;}
+.login-h1 span{color:var(--or);}
+.login-sub{font-size:13px;color:rgba(212,201,184,.35);margin-bottom:32px;}
+.lf-label{font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(212,201,184,.38);text-transform:uppercase;margin-bottom:7px;}
+.lf-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--bg-l);font-family:var(--fb);font-size:15px;padding:13px 16px;margin-bottom:18px;outline:none;transition:all .2s;}
+.lf-input:focus{border-color:var(--or);background:rgba(232,71,10,.05);}
+.lf-input::placeholder{color:rgba(212,201,184,.22);}
+.btn-login{width:100%;background:var(--or);color:#fff;border:none;border-radius:var(--rs);font-family:var(--fd);font-size:18px;font-weight:700;padding:15px;cursor:pointer;letter-spacing:.8px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 20px var(--or-glow);}
+.btn-login:hover{background:var(--or-l);}
+.login-error{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.25);color:#FCA5A5;border-radius:var(--rs);padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;}
+.login-footer-text{margin-top:28px;font-size:10px;color:rgba(212,201,184,.2);line-height:1.8;text-align:center;}
+
+/* ══ SIDEBAR ════════════════════════════════════════════════════ */
+#sidebar{width:var(--sidebar);background:var(--dk2);border-right:1px solid var(--bdr2);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:50;flex-shrink:0;}
+.sb-logo-area{padding:20px 16px 16px;border-bottom:1px solid var(--bdr2);}
+.sb-logo{height:36px;width:auto;margin-bottom:8px;}
+.sb-badge{font-size:9px;font-weight:700;letter-spacing:2.5px;color:var(--or);text-transform:uppercase;font-family:var(--fd);}
+.sb-title{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--bg-l);letter-spacing:.3px;margin-top:2px;}
+.sb-sub{font-size:10px;color:rgba(212,201,184,.28);margin-top:1px;}
+.nav-group{padding:14px 10px 4px;font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(212,201,184,.2);text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:var(--rs);margin:1px 6px;cursor:pointer;color:rgba(212,201,184,.4);font-size:13px;font-weight:500;transition:all .15s;border:none;background:transparent;width:calc(100% - 12px);text-align:left;font-family:var(--fb);}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--bg-l);}
+.nav-item.active{background:var(--or-glow);color:var(--or);font-weight:600;}
+.nav-item .ni{font-size:15px;width:18px;text-align:center;}
+.sb-footer{margin-top:auto;padding:14px 10px;border-top:1px solid var(--bdr2);}
+.user-chip{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.04);border-radius:var(--rs);border:1px solid var(--bdr2);}
+.user-av{width:30px;height:30px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:13px;flex-shrink:0;}
+.user-name{font-size:13px;font-weight:600;color:var(--bg-l);}
+.user-role{font-size:10px;color:rgba(212,201,184,.3);}
+.btn-logout-sb{width:100%;margin-top:8px;background:transparent;border:1px solid var(--bdr);color:rgba(212,201,184,.35);border-radius:var(--rs);font-family:var(--fb);font-size:12px;padding:8px;cursor:pointer;transition:all .2s;}
+.btn-logout-sb:hover{border-color:var(--or);color:var(--or);}
+
+/* ══ MAIN ════════════════════════════════════════════════════════ */
+#main{margin-left:var(--sidebar);flex:1;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
+.main-header{background:var(--dk2);border-bottom:1px solid var(--bdr2);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;flex-shrink:0;}
+.mh-left{display:flex;flex-direction:column;gap:2px;}
+.mh-title{font-family:var(--fd);font-size:20px;font-weight:800;letter-spacing:.3px;}
+.mh-sub{font-size:11px;color:rgba(212,201,184,.32);}
+.mh-actions{display:flex;gap:8px;align-items:center;}
+.btn-sm{padding:9px 18px;border-radius:var(--rs);font-family:var(--fd);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;border:none;letter-spacing:.3px;text-transform:uppercase;}
+.btn-orange{background:var(--or);color:#fff;box-shadow:0 2px 12px var(--or-glow);}
+.btn-orange:hover{background:var(--or-l);}
+.btn-ghost{background:rgba(255,255,255,.05);color:rgba(212,201,184,.6);border:1px solid var(--bdr);}
+.btn-ghost:hover{background:rgba(255,255,255,.08);color:var(--bg-l);}
+.main-body{flex:1;padding:24px 28px;}
+
+/* ══ PAGES ═══════════════════════════════════════════════════════ */
+.page{display:none;}
+.page.active{display:block;animation:fu .2s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ KPI STRIP ═══════════════════════════════════════════════════ */
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+.kpi-card{background:var(--dk2);border:1px solid var(--bdr2);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--or);opacity:.5;}
+.kpi-val{font-family:var(--fd);font-size:28px;font-weight:800;margin-bottom:4px;line-height:1;}
+.kpi-lbl{font-size:10px;color:rgba(212,201,184,.38);font-weight:600;letter-spacing:.8px;text-transform:uppercase;}
+.kpi-note{font-size:11px;color:rgba(212,201,184,.3);margin-top:6px;}
+
+/* ══ PANELS ══════════════════════════════════════════════════════ */
+.panel{background:var(--dk2);border:1px solid var(--bdr2);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
+.panel-hdr{padding:14px 18px;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;justify-content:space-between;}
+.panel-title{font-family:var(--fd);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:.3px;}
+.panel-meta{font-size:11px;color:rgba(212,201,184,.28);}
+.panel-body{padding:16px 18px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+
+/* ══ TABLE ═══════════════════════════════════════════════════════ */
+.table-wrap{background:var(--dk2);border:1px solid var(--bdr2);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
+.table-hdr{padding:14px 20px;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;justify-content:space-between;}
+.table-title{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:.3px;}
+.tbl-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{padding:9px 16px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1.2px;color:rgba(212,201,184,.28);text-transform:uppercase;border-bottom:1px solid var(--bdr2);background:var(--dk3);}
+td{padding:11px 16px;font-size:13px;border-bottom:1px solid var(--bdr3);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.018);}
+.td-bold{font-weight:600;color:var(--bg-l);}
+.td-dim{font-size:11px;color:rgba(212,201,184,.35);}
+
+/* ══ BADGES ══════════════════════════════════════════════════════ */
+.bdg{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px;}
+.bdg-or  {background:rgba(232,71,10,.15);color:var(--or-l);border:1px solid rgba(232,71,10,.25);}
+.bdg-grn {background:var(--grn-l);color:#4ADE80;border:1px solid rgba(45,158,95,.3);}
+.bdg-red {background:var(--red-l);color:#FCA5A5;border:1px solid rgba(220,38,38,.3);}
+.bdg-amb {background:var(--amb-l);color:#FCD34D;border:1px solid rgba(217,119,6,.3);}
+.bdg-blu {background:var(--blu-l);color:#60A5FA;border:1px solid rgba(37,99,235,.3);}
+.bdg-pur {background:var(--pur-l);color:#A78BFA;border:1px solid rgba(124,58,237,.3);}
+.bdg-tea {background:var(--tea-l);color:#5EEAD4;border:1px solid rgba(13,148,136,.3);}
+.bdg-neu {background:rgba(212,201,184,.06);color:var(--bg-d);border:1px solid var(--bdr);}
+
+/* ══ AVAIL DOTS ══════════════════════════════════════════════════ */
+.adot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+.adot-y{background:#4ADE80;}
+.adot-m{background:#FCD34D;}
+.adot-n{background:#FCA5A5;}
+.adot-u{background:#6B7280;}
+
+/* ══ BREAKDOWN BARS ══════════════════════════════════════════════ */
+.bk-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bdr3);}
+.bk-row:last-child{border-bottom:none;}
+.bk-label{width:110px;font-size:12px;font-weight:600;flex-shrink:0;}
+.bk-track{flex:1;height:5px;background:rgba(212,201,184,.08);border-radius:3px;overflow:hidden;}
+.bk-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+.bk-val{width:60px;text-align:right;font-family:var(--fd);font-size:12px;font-weight:700;flex-shrink:0;}
+
+/* ══ ATHLETE HEADER ══════════════════════════════════════════════ */
+.ath-hdr{background:linear-gradient(135deg,var(--dk3),var(--dk2));border:1px solid var(--bdr);border-radius:var(--r);padding:22px;margin-bottom:16px;display:flex;align-items:center;gap:18px;}
+.ath-av{width:58px;height:58px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:22px;font-weight:800;border:2px solid rgba(232,71,10,.5);flex-shrink:0;}
+.ath-name-lg{font-family:var(--fd);font-size:24px;font-weight:800;letter-spacing:.3px;}
+.ath-pos{font-size:12px;color:var(--or);font-weight:600;letter-spacing:.5px;margin-top:2px;}
+.ath-meta-row{font-size:11px;color:rgba(212,201,184,.35);margin-top:4px;}
+
+/* ══ MINI SVG CHART ══════════════════════════════════════════════ */
+.mini-chart{width:100%;height:56px;}
+
+/* ══ ACWR RULER ══════════════════════════════════════════════════ */
+.acwr-ruler{position:relative;height:6px;background:rgba(212,201,184,.08);border-radius:3px;margin:10px 0 6px;}
+.acwr-opt{position:absolute;left:calc(0.8/1.6*100%);width:calc((1.3-0.8)/1.6*100%);height:100%;background:rgba(45,158,95,.3);border-radius:2px;}
+.acwr-dot{position:absolute;width:13px;height:13px;border-radius:50%;top:50%;transform:translate(-50%,-50%);border:2px solid var(--dk2);transition:left .5s ease;}
+.acwr-ruler-lbls{display:flex;justify-content:space-between;font-size:9px;color:rgba(212,201,184,.25);}
+
+/* ══ FORM ════════════════════════════════════════════════════════ */
+.f-sec{margin-bottom:22px;}
+.f-sec-title{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(212,201,184,.3);text-transform:uppercase;margin-bottom:12px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.fg4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.f-grp{display:flex;flex-direction:column;gap:6px;}
+.f-lbl{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(212,201,184,.35);}
+.f-ctrl{background:rgba(255,255,255,.05);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--bg-l);font-family:var(--fb);font-size:14px;padding:10px 14px;outline:none;transition:all .2s;width:100%;}
+.f-ctrl:focus{border-color:var(--or);}
+.f-ctrl option{background:var(--dk2);}
+textarea.f-ctrl{resize:vertical;min-height:76px;line-height:1.6;}
+.carga-preview{background:rgba(232,71,10,.08);border:1px solid rgba(232,71,10,.2);border-radius:var(--rs);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+.cp-lbl{font-size:11px;color:rgba(212,201,184,.4);}
+.cp-val{font-family:var(--fd);font-size:20px;font-weight:800;color:var(--or);}
+
+/* ══ FILTER BAR ══════════════════════════════════════════════════ */
+.filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;}
+.f-select-sm,.f-input-sm{background:rgba(255,255,255,.05);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--bg-l);font-family:var(--fb);font-size:13px;padding:8px 12px;outline:none;transition:border-color .2s;}
+.f-select-sm:focus,.f-input-sm:focus{border-color:var(--or);}
+.f-select-sm option{background:var(--dk2);}
+
+/* ══ LOADING / EMPTY ═════════════════════════════════════════════ */
+.spinner{width:28px;height:28px;border:3px solid rgba(212,201,184,.08);border-top-color:var(--or);border-radius:50%;animation:spin .7s linear infinite;margin:36px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:48px 20px;color:rgba(212,201,184,.2);font-size:13px;}
+
+/* ══ TOAST ═══════════════════════════════════════════════════════ */
+.toast{position:fixed;bottom:24px;right:28px;background:var(--or);color:#fff;padding:12px 20px;border-radius:10px;font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:.3px;opacity:0;pointer-events:none;transition:all .3s;z-index:999;transform:translateY(8px);}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.err{background:var(--red);}
+
+/* ══ FOOTER ══════════════════════════════════════════════════════ */
+.main-footer{border-top:1px solid var(--bdr2);padding:18px 28px;text-align:center;background:var(--dk2);}
+.mf-logo{height:28px;margin-bottom:8px;opacity:.5;}
+.mf-name{font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:1.5px;color:var(--or);text-transform:uppercase;margin-bottom:3px;}
+.mf-info{font-size:10px;color:rgba(212,201,184,.22);line-height:1.8;}
+.mf-contact{font-size:10px;color:rgba(232,71,10,.5);margin-top:4px;}
+
+.mono{font-family:var(--fd);font-weight:600;}
+.divider{height:1px;background:var(--bdr2);margin:16px 0;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <img src="../logo.png" class="login-logo" alt="GM" onerror="this.style.display='none'">
+    <div class="login-badge">Equipe Técnica</div>
+    <div class="login-h1">Painel de<br><span>Controle HCF</span></div>
+    <div class="login-sub">Acesso restrito à comissão técnica</div>
+    <div id="login-err" class="login-error">Credenciais inválidas ou acesso não autorizado.</div>
+    <div class="lf-label">Usuário</div>
+    <input class="lf-input" id="u-user" type="text" placeholder="seu.login" autocomplete="username" autocapitalize="none">
+    <div class="lf-label">Senha</div>
+    <input class="lf-input" id="u-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn-login" onclick="doLogin()">Acessar Sistema</button>
+    <div class="login-footer-text">
+      Gabriel Menezes Consultoria em Treinamento e Saúde<br>
+      CREF 195980-G/SP · CNPJ 64.768.190/0001-74
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar" style="display:none">
+  <div class="sb-logo-area">
+    <img src="../logo.png" class="sb-logo" alt="GM" onerror="this.style.display='none'">
+    <div class="sb-badge">HCF Sistema</div>
+    <div class="sb-title">Painel Técnico</div>
+    <div class="sb-sub">Handebol · Preparação Física</div>
+  </div>
+
+  <div class="nav-group">Principal</div>
+  <button class="nav-item active" data-page="group" onclick="goPage('group')"><span class="ni">👥</span> Dashboard Grupo</button>
+  <button class="nav-item" data-page="athlete" onclick="goPage('athlete')"><span class="ni">📈</span> Dashboard Atleta</button>
+
+  <div class="nav-group">Registros</div>
+  <button class="nav-item" data-page="loads" onclick="goPage('loads')"><span class="ni">📊</span> Carga Total</button>
+  <button class="nav-item" data-page="strength" onclick="goPage('strength')"><span class="ni">💪</span> Carga Força</button>
+  <button class="nav-item" data-page="running" onclick="goPage('running')"><span class="ni">🏃</span> Carga Corrida</button>
+  <button class="nav-item" data-page="wellness" onclick="goPage('wellness')"><span class="ni">💚</span> Wellness</button>
+  <button class="nav-item" data-page="tests" onclick="goPage('tests')"><span class="ni">🧪</span> Testes de Campo</button>
+
+  <div class="nav-group">Gestão</div>
+  <button class="nav-item" data-page="roster" onclick="goPage('roster')"><span class="ni">🗃️</span> Elenco</button>
+  <button class="nav-item" data-page="launch" onclick="goPage('launch')"><span class="ni">✏️</span> Lançar Sessão</button>
+
+  <div class="sb-footer">
+    <div class="user-chip">
+      <div class="user-av" id="sb-av">G</div>
+      <div>
+        <div class="user-name" id="sb-name">—</div>
+        <div class="user-role">Equipe Técnica</div>
+      </div>
+    </div>
+    <button class="btn-logout-sb" onclick="doLogout()">Sair do sistema</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main" style="display:none">
+  <header class="main-header">
+    <div class="mh-left">
+      <div class="mh-title" id="mh-title">Dashboard do Grupo</div>
+      <div class="mh-sub" id="mh-sub">Visão geral do elenco</div>
+    </div>
+    <div class="mh-actions">
+      <button class="btn-sm btn-ghost" onclick="refreshPage()">↻ Atualizar</button>
+      <button class="btn-sm btn-orange" onclick="goPage('launch')">+ Lançar Sessão</button>
+    </div>
+  </header>
+
+  <div class="main-body">
+
+    <!-- GROUP DASHBOARD -->
+    <div id="page-group" class="page active">
+      <div class="kpi-strip">
+        <div class="kpi-card"><div class="kpi-val" id="k-ath">—</div><div class="kpi-lbl">Atletas Ativos</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="k-avail" style="color:#4ADE80">—</div><div class="kpi-lbl">Disponíveis</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="k-acwr" style="color:var(--or)">—</div><div class="kpi-lbl">ACWR Médio</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="k-risk" style="color:#FCA5A5">—</div><div class="kpi-lbl">Em Risco</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-hdr">
+          <div class="table-title">📊 Disponibilidade & Carga — Elenco Completo</div>
+          <div class="panel-meta" id="grp-updated">—</div>
+        </div>
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr>
+              <th>Atleta</th><th>Posição</th><th>Disponível</th>
+              <th>Wellness</th><th>ACWR</th><th>Zona</th><th>Carga 7d</th><th>Ação</th>
+            </tr></thead>
+            <tbody id="grp-tbody"><tr><td colspan="8"><div class="spinner"></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title"><span>⚡</span> Distribuição ACWR</div></div>
+          <div class="panel-body" id="acwr-dist"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title"><span>🎯</span> Atletas por Posição</div></div>
+          <div class="panel-body" id="pos-dist"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATHLETE DASHBOARD -->
+    <div id="page-athlete" class="page">
+      <div class="filter-bar">
+        <select class="f-select-sm" id="ath-select" onchange="loadAthDash()">
+          <option value="">— Selecionar atleta —</option>
+        </select>
+      </div>
+      <div id="ath-dash-content">
+        <div class="empty-state">👆 Selecione um atleta acima para ver o dashboard completo</div>
+      </div>
+    </div>
+
+    <!-- CARGA TOTAL -->
+    <div id="page-loads" class="page">
+      <div class="filter-bar">
+        <select class="f-select-sm" id="loads-ath" onchange="loadLoads()"><option value="">— Selecionar atleta —</option></select>
+        <input class="f-input-sm" type="date" id="loads-from" onchange="loadLoads()">
+        <input class="f-input-sm" type="date" id="loads-to" onchange="loadLoads()">
+      </div>
+      <div class="table-wrap">
+        <div class="table-hdr"><div class="table-title">📊 Registro de Carga Total</div></div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>Data</th><th>Tipo</th><th>Origem</th><th>Volume</th><th>PSE</th><th>Carga (UA)</th><th>Repouso</th></tr></thead>
+          <tbody id="loads-tbody"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- CARGA FORÇA -->
+    <div id="page-strength" class="page">
+      <div class="filter-bar">
+        <select class="f-select-sm" id="str-ath" onchange="loadStrength()"><option value="">— Selecionar atleta —</option></select>
+      </div>
+      <div class="table-wrap">
+        <div class="table-hdr"><div class="table-title">💪 Diário de Força</div></div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>Data</th><th>Exercício</th><th>Série</th><th>Reps</th><th>Carga (kg)</th><th>Volume (kg)</th><th>1RM Est.</th></tr></thead>
+          <tbody id="str-tbody"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- CARGA CORRIDA -->
+    <div id="page-running" class="page">
+      <div class="filter-bar">
+        <select class="f-select-sm" id="run-ath" onchange="loadRunning()"><option value="">— Selecionar atleta —</option></select>
+      </div>
+      <div class="table-wrap">
+        <div class="table-hdr"><div class="table-title">🏃 Diário de Corrida</div></div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>Data</th><th>Tipo</th><th>Dist. Total</th><th>Dist. Alta Int.</th><th>Sprints</th><th>Vel. Máx.</th><th>PSE</th></tr></thead>
+          <tbody id="run-tbody"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- WELLNESS -->
+    <div id="page-wellness" class="page">
+      <div class="filter-bar">
+        <select class="f-select-sm" id="well-ath" onchange="loadWellness()"><option value="">— Selecionar atleta —</option></select>
+      </div>
+      <div class="table-wrap">
+        <div class="table-hdr"><div class="table-title">💚 Monitoramento Wellness</div></div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>Data</th><th>Sono (h)</th><th>Fadiga</th><th>Dor</th><th>Estresse</th><th>Score</th><th>Disponível</th></tr></thead>
+          <tbody id="well-tbody"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- TESTES -->
+    <div id="page-tests" class="page">
+      <div class="filter-bar">
+        <select class="f-select-sm" id="tests-ath" onchange="loadTests()"><option value="">— Selecionar atleta —</option></select>
+        <button class="btn-sm btn-orange" onclick="toggleAddTest()">+ Adicionar Resultado</button>
+      </div>
+      <div id="add-test-panel" class="panel" style="display:none;margin-bottom:16px">
+        <div class="panel-hdr"><div class="panel-title"><span>➕</span> Novo Resultado de Teste</div></div>
+        <div class="panel-body">
+          <div class="fg3" style="margin-bottom:12px">
+            <div class="f-grp"><div class="f-lbl">Data</div><input class="f-ctrl" type="date" id="t-date"></div>
+            <div class="f-grp"><div class="f-lbl">Teste</div>
+              <select class="f-ctrl" id="t-name">
+                <option>Yo-Yo IR1</option><option>CMJ</option><option>Abalakov</option><option>Squat Jump</option>
+                <option>Sprint 10m</option><option>Sprint 20m</option><option>Sprint 30m</option>
+                <option>Illinois Agility Test</option><option>T-Test</option><option>505 COD Test</option>
+                <option>Arremesso MB 2kg</option><option>Arremesso MB 3kg Overhead</option>
+                <option>Cooper 12min</option><option>Beep Test 20m</option>
+                <option>1RM Est. — Supino</option><option>1RM Est. — Agachamento</option>
+                <option>Sentar e Alcançar</option><option>VO₂máx Est. (Yo-Yo)</option>
+              </select>
+            </div>
+            <div class="f-grp"><div class="f-lbl">Capacidade</div>
+              <select class="f-ctrl" id="t-cap">
+                <option>Resistência Aeróbica</option><option>Potência MI</option><option>Potência MS</option>
+                <option>Velocidade</option><option>Agilidade/COD</option>
+                <option>Força Máxima MI</option><option>Força Máxima MS</option>
+                <option>Flexibilidade</option><option>Cap. Aeróbica</option>
+              </select>
+            </div>
+            <div class="f-grp"><div class="f-lbl">Resultado</div><input class="f-ctrl" type="number" step="0.01" id="t-val" placeholder="0.00"></div>
+            <div class="f-grp"><div class="f-lbl">Unidade</div>
+              <select class="f-ctrl" id="t-unit"><option value="m">m</option><option value="cm">cm</option><option value="s">s</option><option value="kg">kg</option><option value="ml/kg/min">ml/kg/min</option><option value="nível">nível</option></select>
+            </div>
+            <div class="f-grp"><div class="f-lbl">Classificação</div>
+              <select class="f-ctrl" id="t-cls"><option>Excelente</option><option>Bom</option><option>Regular</option><option>Fraco</option></select>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-sm btn-orange" onclick="saveTest()">Salvar</button>
+            <button class="btn-sm btn-ghost" onclick="toggleAddTest()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      <div id="tests-content"><div class="empty-state">Selecione um atleta</div></div>
+    </div>
+
+    <!-- ELENCO -->
+    <div id="page-roster" class="page">
+      <div class="table-wrap">
+        <div class="table-hdr">
+          <div class="table-title">🗃️ Cadastro do Elenco</div>
+        </div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>#</th><th>Nome</th><th>Posição</th><th>Idade</th><th>Peso</th><th>Altura</th><th>Ação</th></tr></thead>
+          <tbody id="roster-tbody"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- LANÇAR SESSÃO -->
+    <div id="page-launch" class="page">
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title"><span>✏️</span> Lançar Sessão para Qualquer Atleta</div></div>
+        <div class="panel-body">
+          <div class="f-sec">
+            <div class="f-sec-title">Identificação</div>
+            <div class="fg3">
+              <div class="f-grp"><div class="f-lbl">Atleta</div><select class="f-ctrl" id="rl-ath"><option value="">Selecionar...</option></select></div>
+              <div class="f-grp"><div class="f-lbl">Data</div><input class="f-ctrl" type="date" id="rl-date"></div>
+              <div class="f-grp"><div class="f-lbl">Origem</div>
+                <select class="f-ctrl" id="rl-origin">
+                  <option value="Prep. Física">Prep. Física</option>
+                  <option value="Comissão Técnica">Comissão Técnica</option>
+                  <option value="Jogo">Jogo</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="f-sec">
+            <div class="f-sec-title">Sessão</div>
+            <div class="fg4">
+              <div class="f-grp"><div class="f-lbl">Tipo</div>
+                <select class="f-ctrl" id="rl-type">
+                  <option>Força</option><option>Potência</option><option>Resistência Aeróbica</option>
+                  <option>Resistência Anaeróbica</option><option>Velocidade/Sprints</option>
+                  <option>Agilidade/COD</option><option>Mobilidade</option><option>Flexibilidade</option>
+                  <option>Técnico-Tático</option><option>Jogo/Competição</option>
+                  <option>Recuperação Ativa</option><option>Folga</option>
+                </select>
+              </div>
+              <div class="f-grp"><div class="f-lbl">Volume (min)</div><input class="f-ctrl" type="number" id="rl-vol" placeholder="60" oninput="updateCalc()"></div>
+              <div class="f-grp"><div class="f-lbl">PSE (1–10)</div><input class="f-ctrl" type="number" id="rl-pse" min="1" max="10" placeholder="7" oninput="updateCalc()"></div>
+              <div class="f-grp"><div class="f-lbl">Repouso (1–5)</div><input class="f-ctrl" type="number" id="rl-rest" min="1" max="5" placeholder="3"></div>
+            </div>
+            <div class="carga-preview" style="margin-top:12px">
+              <div class="cp-lbl">Carga calculada (PSE × Volume)</div>
+              <div class="cp-val" id="rl-calc">— UA</div>
+            </div>
+          </div>
+          <div class="f-sec">
+            <div class="f-sec-title">Observações</div>
+            <textarea class="f-ctrl" id="rl-notes" placeholder="Observações sobre a sessão..."></textarea>
+          </div>
+          <button class="btn-sm btn-orange" style="padding:12px 32px;font-size:16px" onclick="saveStaffLoad()">Salvar Sessão</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-body -->
+
+  <footer class="main-footer">
+    <img src="../logo.png" class="mf-logo" alt="GM" onerror="this.style.display='none'">
+    <div class="mf-name">Gabriel Menezes</div>
+    <div class="mf-info">Consultoria em Treinamento e Saúde &nbsp;·&nbsp; CREF 195980-G/SP &nbsp;·&nbsp; CNPJ 64.768.190/0001-74</div>
+    <div class="mf-contact">personal.gabrielmenezes@gmail.com</div>
+  </footer>
+</div><!-- /main -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000/api':'/api';
+let token=localStorage.getItem('hcf_st_t');
+let userName=localStorage.getItem('hcf_st_n');
+let athletes=[];
+let curPage='group';
+
+const PAGE_META={
+  group:  ['Dashboard do Grupo','Visão geral do elenco — disponibilidade e carga'],
+  athlete:['Dashboard do Atleta','Painel individual com analytics completos'],
+  loads:  ['Carga Total','Registro de todas as sessões por atleta'],
+  strength:['Carga de Força','Diário de exercícios — séries, reps e tonelagem'],
+  running:['Carga de Corrida','Velocidade, distância e sprints por sessão'],
+  wellness:['Wellness','Monitoramento diário de estado físico e mental'],
+  tests:  ['Testes de Campo','Resultados das avaliações físicas'],
+  roster: ['Elenco','Cadastro completo dos 20 atletas'],
+  launch: ['Lançar Sessão','Adicionar sessão para qualquer atleta do elenco'],
+};
+const POS_BADGE={'Armador Central':'bdg-blu','Armador Lateral':'bdg-pur','Ponta':'bdg-amb','Pivô':'bdg-tea','Goleiro':'bdg-grn'};
+const TYPE_BADGE={'Técnico-Tático':'bdg-pur','Jogo/Competição':'bdg-tea','Força':'bdg-blu','Potência':'bdg-pur','Recuperação Ativa':'bdg-neu'};
+const ORIGIN_BADGE={'Prep. Física':'bdg-blu','Comissão Técnica':'bdg-pur','Jogo':'bdg-tea'};
+const ACWR_COLORS={safe:'#4ADE80',warning:'#FCD34D',danger:'#FCA5A5',neutral:'#9CA3AF'};
+
+// ── Init ──────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('u-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  const today=new Date().toISOString().split('T')[0];
+  if(document.getElementById('rl-date')) document.getElementById('rl-date').value=today;
+  if(document.getElementById('t-date'))  document.getElementById('t-date').value=today;
+  if(token) showApp(); else document.getElementById('login-screen').style.display='flex';
+});
+
+// ── Auth ──────────────────────────────────────────────────────────
+async function doLogin(){
+  const u=document.getElementById('u-user').value.trim();
+  const p=document.getElementById('u-pass').value;
+  const err=document.getElementById('login-err');
+  err.style.display='none';
+  try{
+    const fd=new FormData(); fd.append('username',u); fd.append('password',p);
+    const r=await fetch(`${API}/auth/token`,{method:'POST',body:fd});
+    const d=await r.json();
+    if(!r.ok||d.role!=='staff') throw new Error('Não autorizado');
+    token=d.access_token; userName=d.name;
+    localStorage.setItem('hcf_st_t',token);
+    localStorage.setItem('hcf_st_n',userName);
+    showApp();
+  }catch(e){err.style.display='block';}
+}
+
+function doLogout(){
+  localStorage.removeItem('hcf_st_t');
+  localStorage.removeItem('hcf_st_n');
+  document.getElementById('sidebar').style.display='none';
+  document.getElementById('main').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+}
+
+async function showApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('sidebar').style.display='flex';
+  document.getElementById('main').style.display='flex';
+  document.getElementById('sb-name').textContent=userName||'—';
+  document.getElementById('sb-av').textContent=(userName||'?')[0].toUpperCase();
+  await loadAthletes();
+  loadGroupDash();
+}
+
+// ── Athletes ──────────────────────────────────────────────────────
+async function loadAthletes(){
+  try{
+    athletes=await apiFetch('/athletes')||[];
+    const selects=['ath-select','rl-ath','loads-ath','str-ath','run-ath','well-ath','tests-ath'];
+    selects.forEach(id=>{
+      const el=document.getElementById(id); if(!el) return;
+      while(el.options.length>1) el.remove(1);
+      athletes.forEach(a=>{
+        const o=document.createElement('option');
+        o.value=a.id; o.textContent=`${a.name} (${a.position})`; el.appendChild(o);
+      });
+    });
+    buildRoster();
+  }catch(e){console.warn('load athletes',e);}
+}
+
+function buildRoster(){
+  const tb=document.getElementById('roster-tbody'); if(!tb) return;
+  tb.innerHTML=athletes.map(a=>{
+    const age=a.date_of_birth?Math.floor((Date.now()-new Date(a.date_of_birth))/31557600000):'—';
+    return `<tr>
+      <td class="mono">${a.shirt_number||'—'}</td>
+      <td class="td-bold">${a.name}</td>
+      <td><span class="bdg ${POS_BADGE[a.position]||'bdg-neu'}">${a.position}</span></td>
+      <td>${age}</td>
+      <td class="mono">${a.weight_kg?a.weight_kg+'kg':'—'}</td>
+      <td class="mono">${a.height_cm?a.height_cm+'cm':'—'}</td>
+      <td><button class="btn-sm btn-ghost" style="font-size:11px;padding:5px 12px" onclick="viewAth(${a.id})">Ver →</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Group Dashboard ───────────────────────────────────────────────
+async function loadGroupDash(){
+  try{
+    const data=await apiFetch('/group/analytics/availability');
+    if(!data) return;
+    document.getElementById('k-ath').textContent=data.length;
+    const avail=data.filter(d=>d.available==='Sim').length;
+    document.getElementById('k-avail').textContent=avail;
+    const acwrs=data.filter(d=>d.acwr).map(d=>d.acwr);
+    document.getElementById('k-acwr').textContent=acwrs.length?(acwrs.reduce((a,b)=>a+b,0)/acwrs.length).toFixed(2):'—';
+    document.getElementById('k-risk').textContent=data.filter(d=>d.acwr_risk==='danger').length;
+    document.getElementById('grp-updated').textContent='Atualizado '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+    const tb=document.getElementById('grp-tbody');
+    tb.innerHTML=data.map(d=>{
+      const rc=d.acwr_risk==='safe'?'bdg-grn':d.acwr_risk==='danger'?'bdg-red':d.acwr_risk==='warning'?'bdg-amb':'bdg-neu';
+      const dc=d.available==='Sim'?'adot-y':d.available==='Monitorar'?'adot-m':d.available==='Não'?'adot-n':'adot-u';
+      const ws=d.wellness_score??'—';
+      const wc=ws>=7?'#4ADE80':ws>=5?'#FCD34D':'#FCA5A5';
+      return `<tr>
+        <td class="td-bold">${d.name}</td>
+        <td><span class="bdg ${POS_BADGE[d.position]||'bdg-neu'}">${d.position}</span></td>
+        <td><span class="adot ${dc}"></span>${d.available||'Sem dado'}</td>
+        <td><span class="mono" style="color:${wc}">${ws}</span></td>
+        <td class="mono">${d.acwr??'—'}</td>
+        <td><span class="bdg ${rc}">${d.acwr_zone||'—'}</span></td>
+        <td>—</td>
+        <td><button class="btn-sm btn-ghost" style="font-size:11px;padding:5px 12px" onclick="viewAth(${d.athlete_id})">Ver →</button></td>
+      </tr>`;
+    }).join('');
+
+    // ACWR distribution
+    const zones={Ótima:0,Atenção:0,Risco:0,Subtreino:0,'Sem dados':0};
+    data.forEach(d=>{const z=d.acwr_zone||'Sem dados';zones[z]=(zones[z]||0)+1;});
+    const zc={Ótima:'#4ADE80',Atenção:'#FCD34D',Risco:'#FCA5A5',Subtreino:'#FCD34D','Sem dados':'#6B7280'};
+    document.getElementById('acwr-dist').innerHTML=Object.entries(zones).map(([k,v])=>
+      `<div class="bk-row"><div class="bk-label">${k}</div><div class="bk-track"><div class="bk-fill" style="width:${v/data.length*100}%;background:${zc[k]}"></div></div><div class="bk-val" style="color:${zc[k]}">${v}</div></div>`
+    ).join('');
+
+    // Position distribution
+    const pd={};
+    athletes.forEach(a=>{pd[a.position]=(pd[a.position]||0)+1;});
+    const pc={'Armador Central':'#60A5FA','Armador Lateral':'#A78BFA','Ponta':'#FCD34D','Pivô':'#5EEAD4','Goleiro':'#4ADE80'};
+    document.getElementById('pos-dist').innerHTML=Object.entries(pd).map(([pos,ct])=>
+      `<div class="bk-row"><div class="bk-label" style="width:130px">${pos}</div><div class="bk-track"><div class="bk-fill" style="width:${ct/athletes.length*100}%;background:${pc[pos]||'#9CA3AF'}"></div></div><div class="bk-val">${ct}</div></div>`
+    ).join('');
+  }catch(e){console.warn('group dash',e);}
+}
+
+// ── Athlete Dashboard ─────────────────────────────────────────────
+async function loadAthDash(){
+  const id=document.getElementById('ath-select').value; if(!id) return;
+  const content=document.getElementById('ath-dash-content');
+  content.innerHTML='<div class="spinner"></div>';
+  try{
+    const [ath,acwr,mono,bd,trend,well,tests]=await Promise.all([
+      apiFetch(`/athletes/${id}`),
+      apiFetch(`/athletes/${id}/analytics/acwr`),
+      apiFetch(`/athletes/${id}/analytics/monotony`),
+      apiFetch(`/athletes/${id}/analytics/load-breakdown`),
+      apiFetch(`/athletes/${id}/analytics/trend?weeks=4`),
+      apiFetch(`/athletes/${id}/wellness?limit=7`),
+      apiFetch(`/athletes/${id}/tests`),
+    ]);
+    const age=ath.date_of_birth?Math.floor((Date.now()-new Date(ath.date_of_birth))/31557600000):'—';
+    const rc=acwr.risk==='safe'?'bdg-grn':acwr.risk==='danger'?'bdg-red':acwr.risk==='warning'?'bdg-amb':'bdg-neu';
+    const ac=ACWR_COLORS[acwr.risk]||'#9CA3AF';
+    const acwrPct=acwr.acwr?Math.min(acwr.acwr/1.6*100,100):0;
+    const lw=well[0];
+    const ws=lw?.wellness_score??'—';
+
+    // Trend SVG
+    const tv=trend.map(t=>t.total_ua);
+    const mx=Math.max(...tv,1);
+    const pts=tv.map((v,i)=>`${i/(tv.length-1||1)*100},${100-v/mx*88}`).join(' ');
+    const svgLine=`<svg viewBox="0 0 100 100" class="mini-chart" preserveAspectRatio="none">
+      <polyline points="${pts}" fill="none" stroke="${ac}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+
+    content.innerHTML=`
+      <div class="ath-hdr">
+        <div class="ath-av">${ath.name[0]}</div>
+        <div style="flex:1">
+          <div class="ath-name-lg">${ath.name}</div>
+          <div class="ath-pos">${ath.position}</div>
+          <div class="ath-meta-row">${age} anos · ${ath.weight_kg||'—'}kg · ${ath.height_cm||'—'}cm</div>
+        </div>
+        <span class="bdg ${rc}" style="font-size:13px;padding:7px 16px">ACWR ${acwr.acwr??'—'} · ${acwr.zone}</span>
+      </div>
+
+      <div class="grid-3">
+        <div class="kpi-card"><div class="kpi-val mono" style="color:${ac}">${acwr.acwr??'—'}</div><div class="kpi-lbl">ACWR</div><div class="kpi-note">Carga 7d: ${acwr.acute_load} UA</div></div>
+        <div class="kpi-card"><div class="kpi-val mono" style="color:#FCD34D">${mono.monotony??'—'}</div><div class="kpi-lbl">Monotonia</div><div class="kpi-note">Strain: ${mono.strain??'—'} UA</div></div>
+        <div class="kpi-card"><div class="kpi-val mono" style="color:#4ADE80">${ws}</div><div class="kpi-lbl">Wellness</div><div class="kpi-note">${lw?.available||'Sem dado hoje'}</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title"><span>📊</span> Zona de Carga — ACWR</div></div>
+          <div class="panel-body">
+            <div class="acwr-ruler">
+              <div class="acwr-opt"></div>
+              <div class="acwr-dot" style="left:${acwrPct}%;background:${ac}"></div>
+            </div>
+            <div class="acwr-ruler-lbls"><span>0.0</span><span style="color:#4ADE80">Ótima 0.8–1.3</span><span>1.6+</span></div>
+            <div style="margin-top:14px">${svgLine}</div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(212,201,184,.25);margin-top:3px">
+              ${trend.map(t=>`<span>${t.week}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title"><span>⚡</span> Carga por Tipo — 7 dias</div></div>
+          <div class="panel-body">
+            ${bd.map(b=>{
+              const c=b.origin==='Comissão Técnica'?'#A78BFA':b.origin==='Jogo'?'#5EEAD4':'#60A5FA';
+              return `<div class="bk-row">
+                <div class="bk-label" style="color:${c};font-size:11px">${b.session_type}</div>
+                <div class="bk-track"><div class="bk-fill" style="width:${b.pct_total}%;background:${c}"></div></div>
+                <div class="bk-val" style="color:${c};font-size:11px">${Math.round(b.total_ua)}</div>
+              </div>`;
+            }).join('')||'<div class="empty-state" style="padding:20px">Sem dados esta semana</div>'}
+          </div>
+        </div>
+      </div>
+
+      ${tests.length?`
+      <div class="table-wrap">
+        <div class="table-hdr"><div class="table-title">🧪 Testes de Campo — Histórico</div></div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>Data</th><th>Teste</th><th>Capacidade</th><th>Resultado</th><th>Classificação</th></tr></thead>
+          <tbody>${tests.slice(0,8).map(t=>
+            `<tr><td class="mono">${fmtDate(t.date)}</td><td class="td-bold">${t.test_name}</td><td>${t.capacity}</td>
+             <td class="mono" style="color:var(--or)">${t.value} ${t.unit}</td>
+             <td>${clsBdg(t.classification)}</td></tr>`
+          ).join('')}</tbody>
+        </table></div>
+      </div>`:''}
+
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title"><span>🏥</span> Histórico Clínico</div></div>
+        <div class="panel-body">
+          <div class="grid-2">
+            <div><div style="font-size:10px;color:rgba(212,201,184,.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Saúde</div><div style="font-size:13px">${ath.health_history||'—'}</div></div>
+            <div><div style="font-size:10px;color:rgba(212,201,184,.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Lesões</div><div style="font-size:13px">${ath.injury_history||'—'}</div></div>
+          </div>
+        </div>
+      </div>`;
+  }catch(e){content.innerHTML='<div class="empty-state">Erro ao carregar dados do atleta</div>';}
+}
+
+function viewAth(id){document.getElementById('ath-select').value=id;goPage('athlete');loadAthDash();}
+
+// ── Tables ────────────────────────────────────────────────────────
+async function loadLoads(){
+  const id=document.getElementById('loads-ath').value;
+  const tb=document.getElementById('loads-tbody');
+  if(!id){tb.innerHTML='<tr><td colspan="7" class="empty-state">Selecione um atleta</td></tr>';return;}
+  tb.innerHTML='<tr><td colspan="7"><div class="spinner"></div></td></tr>';
+  try{
+    const d=await apiFetch(`/athletes/${id}/loads?limit=60`);
+    tb.innerHTML=d.map(l=>`<tr>
+      <td class="mono">${fmtDate(l.date)}</td>
+      <td>${bdg(l.session_type,TYPE_BADGE[l.session_type]||'bdg-neu')}</td>
+      <td>${bdg(l.session_origin,ORIGIN_BADGE[l.session_origin]||'bdg-neu')}</td>
+      <td class="mono">${l.volume_min}min</td>
+      <td class="mono">${l.pse}</td>
+      <td class="mono" style="color:var(--or);font-weight:700">${l.load_ua} UA</td>
+      <td class="mono">${l.rest_perception||'—'}</td>
+    </tr>`).join('')||'<tr><td colspan="7" class="empty-state">Sem registros</td></tr>';
+  }catch(e){tb.innerHTML='<tr><td colspan="7" class="empty-state">Erro ao carregar</td></tr>';}
+}
+
+async function loadStrength(){
+  const id=document.getElementById('str-ath').value;
+  const tb=document.getElementById('str-tbody');
+  if(!id){tb.innerHTML='<tr><td colspan="7" class="empty-state">Selecione um atleta</td></tr>';return;}
+  tb.innerHTML='<tr><td colspan="7"><div class="spinner"></div></td></tr>';
+  try{
+    const d=await apiFetch(`/athletes/${id}/strength?limit=100`);
+    tb.innerHTML=d.map(r=>`<tr>
+      <td class="mono">${fmtDate(r.date)}</td>
+      <td class="td-bold">${r.exercise}</td>
+      <td class="mono">S${r.set_number}</td>
+      <td class="mono">${r.reps}x</td>
+      <td class="mono" style="color:var(--or)">${r.load_kg}kg</td>
+      <td class="mono">${r.volume_kg||'—'}kg</td>
+      <td class="mono" style="color:#60A5FA">${r.one_rm_epley||'—'}kg</td>
+    </tr>`).join('')||'<tr><td colspan="7" class="empty-state">Sem registros</td></tr>';
+  }catch(e){tb.innerHTML='<tr><td colspan="7" class="empty-state">Erro ao carregar</td></tr>';}
+}
+
+async function loadRunning(){
+  const id=document.getElementById('run-ath').value;
+  const tb=document.getElementById('run-tbody');
+  if(!id){tb.innerHTML='<tr><td colspan="7" class="empty-state">Selecione um atleta</td></tr>';return;}
+  tb.innerHTML='<tr><td colspan="7"><div class="spinner"></div></td></tr>';
+  try{
+    const d=await apiFetch(`/athletes/${id}/running?limit=60`);
+    tb.innerHTML=d.map(r=>`<tr>
+      <td class="mono">${fmtDate(r.date)}</td>
+      <td>${bdg(r.session_type,TYPE_BADGE[r.session_type]||'bdg-neu')}</td>
+      <td class="mono" style="color:#5EEAD4">${r.total_distance_m?r.total_distance_m+'m':'—'}</td>
+      <td class="mono" style="color:#60A5FA">${r.hi_distance_m?r.hi_distance_m+'m':'—'}</td>
+      <td class="mono">${r.n_sprints||'—'}</td>
+      <td class="mono" style="color:var(--or)">${r.max_speed_kmh?r.max_speed_kmh+'km/h':'—'}</td>
+      <td class="mono">${r.pse||'—'}</td>
+    </tr>`).join('')||'<tr><td colspan="7" class="empty-state">Sem registros</td></tr>';
+  }catch(e){tb.innerHTML='<tr><td colspan="7" class="empty-state">Erro ao carregar</td></tr>';}
+}
+
+async function loadWellness(){
+  const id=document.getElementById('well-ath').value;
+  const tb=document.getElementById('well-tbody');
+  if(!id){tb.innerHTML='<tr><td colspan="7" class="empty-state">Selecione um atleta</td></tr>';return;}
+  tb.innerHTML='<tr><td colspan="7"><div class="spinner"></div></td></tr>';
+  try{
+    const d=await apiFetch(`/athletes/${id}/wellness?limit=30`);
+    tb.innerHTML=d.map(w=>{
+      const ws=w.wellness_score,wc=ws>=7?'#4ADE80':ws>=5?'#FCD34D':'#FCA5A5';
+      const ac=w.available==='Sim'?'bdg-grn':w.available==='Não'?'bdg-red':'bdg-amb';
+      return `<tr>
+        <td class="mono">${fmtDate(w.date)}</td>
+        <td class="mono">${w.sleep_hours||'—'}h</td>
+        <td class="mono">${w.muscle_fatigue||'—'}/10</td>
+        <td class="mono">${w.pain_level||'—'}/10</td>
+        <td class="mono">${w.psych_stress||'—'}/10</td>
+        <td class="mono" style="color:${wc};font-weight:700">${ws??'—'}</td>
+        <td>${w.available?`<span class="bdg ${ac}">${w.available}</span>`:'—'}</td>
+      </tr>`;
+    }).join('')||'<tr><td colspan="7" class="empty-state">Sem registros</td></tr>';
+  }catch(e){tb.innerHTML='<tr><td colspan="7" class="empty-state">Erro ao carregar</td></tr>';}
+}
+
+// ── Tests ─────────────────────────────────────────────────────────
+async function loadTests(){
+  const id=document.getElementById('tests-ath').value;
+  const c=document.getElementById('tests-content');
+  if(!id){c.innerHTML='<div class="empty-state">Selecione um atleta</div>';return;}
+  c.innerHTML='<div class="spinner"></div>';
+  try{
+    const d=await apiFetch(`/athletes/${id}/tests`);
+    if(!d.length){c.innerHTML='<div class="empty-state">Sem testes registrados</div>';return;}
+    c.innerHTML=`<div class="table-wrap"><div class="tbl-scroll"><table>
+      <thead><tr><th>Data</th><th>Teste</th><th>Capacidade</th><th>Resultado</th><th>Classificação</th></tr></thead>
+      <tbody>${d.map(t=>`<tr>
+        <td class="mono">${fmtDate(t.date)}</td>
+        <td class="td-bold">${t.test_name}</td><td>${t.capacity}</td>
+        <td class="mono" style="color:var(--or)">${t.value} ${t.unit}</td>
+        <td>${clsBdg(t.classification)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div></div>`;
+  }catch(e){c.innerHTML='<div class="empty-state">Erro ao carregar</div>';}
+}
+
+function toggleAddTest(){
+  const p=document.getElementById('add-test-panel');
+  p.style.display=p.style.display==='none'?'block':'none';
+}
+
+async function saveTest(){
+  const id=document.getElementById('tests-ath').value;
+  if(!id){showToast('Selecione um atleta',true);return;}
+  try{
+    await apiFetch(`/athletes/${id}/tests`,{method:'POST',body:JSON.stringify({
+      date:document.getElementById('t-date').value,
+      test_name:document.getElementById('t-name').value,
+      capacity:document.getElementById('t-cap').value,
+      value:parseFloat(document.getElementById('t-val').value),
+      unit:document.getElementById('t-unit').value,
+      classification:document.getElementById('t-cls').value,
+    })});
+    showToast('Teste salvo!'); toggleAddTest(); loadTests();
+  }catch(e){showToast('Erro ao salvar',true);}
+}
+
+// ── Launch load ───────────────────────────────────────────────────
+function updateCalc(){
+  const v=+document.getElementById('rl-vol').value||0;
+  const p=+document.getElementById('rl-pse').value||0;
+  document.getElementById('rl-calc').textContent=v&&p?`${v*p} UA`:'— UA';
+}
+
+async function saveStaffLoad(){
+  const id=document.getElementById('rl-ath').value;
+  const date=document.getElementById('rl-date').value;
+  const vol=+document.getElementById('rl-vol').value;
+  const pse=+document.getElementById('rl-pse').value;
+  if(!id||!date||!vol||!pse){showToast('Preencha todos os campos obrigatórios',true);return;}
+  try{
+    await apiFetch(`/athletes/${id}/loads`,{method:'POST',body:JSON.stringify({
+      date,session_type:document.getElementById('rl-type').value,
+      session_origin:document.getElementById('rl-origin').value,
+      volume_min:vol,pse,
+      rest_perception:+document.getElementById('rl-rest').value||null,
+      notes:document.getElementById('rl-notes').value||null,
+    })});
+    showToast('Sessão lançada!');
+    document.getElementById('rl-vol').value='';
+    document.getElementById('rl-pse').value='';
+    document.getElementById('rl-notes').value='';
+    document.getElementById('rl-calc').textContent='— UA';
+  }catch(e){showToast('Erro ao salvar',true);}
+}
+
+// ── Navigation ────────────────────────────────────────────────────
+function goPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
+  document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+  const [t,s]=PAGE_META[page]||[page,''];
+  document.getElementById('mh-title').textContent=t;
+  document.getElementById('mh-sub').textContent=s;
+  curPage=page;
+}
+
+function refreshPage(){
+  if(curPage==='group') loadGroupDash();
+  else if(curPage==='athlete') loadAthDash();
+  else if(curPage==='loads') loadLoads();
+  else if(curPage==='strength') loadStrength();
+  else if(curPage==='running') loadRunning();
+  else if(curPage==='wellness') loadWellness();
+  else if(curPage==='tests') loadTests();
+  else if(curPage==='roster') buildRoster();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────
+async function apiFetch(endpoint,opts={}){
+  const r=await fetch(API+endpoint,{headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json',...(opts.headers||{})},...opts});
+  if(r.status===401){doLogout();return;}
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+function fmtDate(d){return new Date(d+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});}
+function bdg(text,cls){return `<span class="bdg ${cls||'bdg-neu'}">${text||'—'}</span>`;}
+function clsBdg(c){const m={Excelente:'bdg-grn',Bom:'bdg-grn',Regular:'bdg-amb',Fraco:'bdg-red'};return c?`<span class="bdg ${m[c]||'bdg-neu'}">${c}</span>`:'—';}
+function showToast(msg,isErr=false){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(isErr?' err':'');setTimeout(()=>t.className='toast',2800);}
+</script>
+</body>
+</html>
